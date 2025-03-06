@@ -1,88 +1,105 @@
 # Terraform
 **So what is Terraform?** Terraform is an infrastructure as code tool that streamlines the process of building, modifying, and versioning cloud and on-premises resources. Developed by HashiCorp, this powerful tool allows users to define their infrastructure in human-readable configuration files, facilitating efficient management and automation of resources through a declarative approach.
 
-# Install Terraform
+## Install Terraform
+Refer to the [Official Installation Guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
-## Choose your operating system:
+#### Prerequisites
 
-<div>
-  <button onclick="showTab('ubuntu')">Ubuntu/Debian</button>
-  <button onclick="showTab('rhel')">CentOS/RHEL</button>
-  <button onclick="showTab('fedora')">Fedora</button>
-  <button onclick="showTab('amazon')">Amazon Linux</button>
-  <button onclick="showTab('macos')">macOS</button>
-  <button onclick="showTab('windows')">Windows</button>
-</div>
+Ensure that your system is up to date and that you have the following packages installed: `gnupg`, `software-properties-common`, and `curl`. These packages are required to verify HashiCorp's GPG signature and install the HashiCorp Debian package repository.
 
-<div id="ubuntu" class="tab-content">
-  <h3>Ubuntu/Debian</h3>
-  <p>Ensure that your system is up to date and you have installed the `gnupg`, `software-properties-common`, and `curl` packages installed. You will use these packages to verify HashiCorp's GPG signature and install HashiCorp's Debian package repository.</p>
-  <pre><code>$ sudo apt-get update && sudo apt-get install -y gnupg software-properties-common</code></pre>
-  <p>Install the HashiCorp GPG key.</p>
-  <pre><code>$ wget -O- https://apt.releases.hashicorp.com/gpg | \
-  gpg --dearmor | \
-  sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null</code></pre>
-  <p>Verify the key's fingerprint.</p>
-  <pre><code>$ gpg --no-default-keyring \
-  --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-  --fingerprint</code></pre>
-</div>
+```bash
+$ sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+```
 
-<div id="rhel" class="tab-content" style="display:none;">
-  <h3>CentOS/RHEL</h3>
-  <p>Instructions for CentOS/RHEL...</p>
-</div>
+## Install the HashiCorp GPG Key
+- You install the HashiCorp GPG key to verify the authenticity and integrity of downloaded HashiCorp software packages, ensuring that the files you are installing are genuinely from HashiCorp and haven't been tampered with during download, by checking their digital signature using the public GPG key they provide; this is a standard security practice to protect against malicious software distribution.
+- Download and install the HashiCorp GPG key to verify the authenticity of the packages.
 
-<div id="fedora" class="tab-content" style="display:none;">
-  <h3>Fedora</h3>
-  <p>Instructions for Fedora...</p>
-</div>
+```bash
+$ wget -O- https://apt.releases.hashicorp.com/gpg | \
+gpg --dearmor | \
+sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+```
 
-<div id="amazon" class="tab-content" style="display:none;">
-  <h3>Amazon Linux</h3>
-  <p>Instructions for Amazon Linux...</p>
-</div>
+## Verify the Key's Fingerprint
 
-<div id="macos" class="tab-content" style="display:none;">
-  <h3>macOS</h3>
-  <p>Instructions for macOS...</p>
-</div>
+Verify the GPG key's fingerprint to ensure it matches HashiCorp's official key.
 
-<div id="windows" class="tab-content" style="display:none;">
-  <h3>Windows</h3>
-  <p>Instructions for Windows...</p>
-</div>
+```bash
+$ gpg --no-default-keyring \
+--keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+--fingerprint
+```
 
-<script>
-function showTab(tabName) {
-  var i, tabContent, buttons;
-  tabContent = document.getElementsByClassName("tab-content");
-  for (i = 0; i < tabContent.length; i++) {
-    tabContent[i].style.display = "none";
-  }
-  buttons = document.getElementsByTagName("button");
-  for (i = 0; i < buttons.length; i++) {
-    buttons[i].className = buttons[i].className.replace(" active", "");
-  }
-  document.getElementById(tabName).style.display = "block";
-  event.currentTarget.className += " active";
-}
-</script>
+The `gpg` command will report the key fingerprint:
 
-<style>
-button {
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
-}
-.tab-content {
-  display: none;
-  padding: 20px;
-  border: 1px solid #ccc;
-}
-</style>
+```
+/usr/share/keyrings/hashicorp-archive-keyring.gpg
+-------------------------------------------------
+pub   rsa4096 XXXX-XX-XX [SC]
+AAAA AAAA AAAA AAAA
+uid           [ unknown] HashiCorp Security (HashiCorp Package Signing) <security+packaging@hashicorp.com>
+sub   rsa4096 XXXX-XX-XX [E]
+```
 
+**Tip**: Refer to the [Official Packaging Guide](https://www.hashicorp.com/official-packaging-guide) for the latest public signing key. You can also verify the key on [Security at HashiCorp](https://www.hashicorp.com/security) under Linux Package Checksum Verification.
 
+## Add the Official HashiCorp Repository
+
+Add the official HashiCorp repository to your system. The `lsb_release -cs` command finds the distribution release codename for your current system, such as `buster`, `groovy`, or `sid`.
+
+```bash
+$ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+sudo tee /etc/apt/sources.list.d/hashicorp.list
+```
+
+## Download Package Information
+
+Update your package list to include the new HashiCorp repository.
+
+```bash
+$ sudo apt update
+```
+
+## Install Terraform
+
+Install Terraform from the newly added repository.
+
+```bash
+$ sudo apt-get install terraform
+```
+
+**Tip**: Now that you have added the HashiCorp repository, you can install other HashiCorp products like Vault, Consul, Nomad, and Packer using the same command.
+
+## Verify the Installation
+
+Verify that the installation was successful by opening a new terminal session and listing Terraform's available subcommands.
+
+```bash
+$ terraform -help
+Usage: terraform [-version] [-help] <command> [args]
+
+The available commands for execution are listed below.
+The most common, useful commands are shown first, followed by
+less common or more advanced commands. If you're just getting
+started with Terraform, stick with the common commands. For the
+other commands, please read the help and docs before usage.
+##...
+```
+
+To learn more about a specific subcommand, add it to `terraform -help`. For example:
+
+```bash
+$ terraform -help plan
+```
+
+This will provide detailed information about the `plan` subcommand and its available options.
+
+---
+
+This document provides a clear and concise guide for installing Terraform on a Debian-based system, including verification steps and tips for additional HashiCorp products.
 ## Terraform File Architecture
 
 Below is a visual representation of the Terraform file architecture:
