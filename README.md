@@ -3,7 +3,7 @@
 
 You can achieve a switchable tab-like interface in a GitHub README using HTML and JavaScript. Below is the markdown code with embedded HTML and JavaScript to create tabs for installation instructions on different Linux distributions.
 
-```markdown
+
 # Install Terraform
 
 ## Installation Methods
