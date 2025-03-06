@@ -1,4 +1,6 @@
 # Terraform
+**So what is Terraform?** Terraform is an infrastructure as code tool that streamlines the process of building, modifying, and versioning cloud and on-premises resources. Developed by HashiCorp, this powerful tool allows users to define their infrastructure in human-readable configuration files, facilitating efficient management and automation of resources through a declarative approach.
+
 # Terraform Project
 
 This project demonstrates a Terraform architecture setup.
