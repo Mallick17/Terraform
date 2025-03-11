@@ -295,8 +295,7 @@ resource "aws_instance" "example" {
 
 ### 7. **Output Block**
 
-The `output` block is used to define the values that will be displayed after the Terraform plan or apply is executed. Outputs are helpful for exposing certain values, like resource IDs or IP addresses, that might be used outside Terraform.
-
+The `output` block is used to define the values that will be displayed after the Terraform plan or apply is executed. Outputs can include information like IP addresses, URLs, or resource identifiers that are useful for interacting with the given infrastructure. By defining output blocks, you can extract important information from your infrastructure and provide it to users or other systems for further actions or integrations.
 #### Example:
 ```hcl
 output "instance_id" {
