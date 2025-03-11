@@ -312,7 +312,7 @@ output "instance_id" {
 
 ### 8. **Locals Block**
 
-The `locals` block allows you to define local values, which can be used within your configuration to reduce repetition and make your code more maintainable. These local values are like variables, but they are only scoped to the current configuration.
+The `locals` block allows declaring local variables within the Terraform configuration for easier code readability and reusability.Local variables are temporary and can be defined within a block to compute and store intermediate values that are used within the same configuration file. These variables are not exposed to other configurations or modules and are purely for internal use within the same configuration.
 
 #### Example:
 ```hcl
@@ -337,14 +337,10 @@ resource "aws_instance" "example" {
 
 ---
 
-### Full Example of Terraform Configuration
-
-
-
 ### Key Takeaways:
 - **Terraform Block**: Configures global settings such as required versions and providers.
 - **Provider Block**: Defines the provider configuration, like AWS or Azure.
-- **Data Block**: Queries existing data (like AMIs or resource information).
+- **Data Block**: Queries existing data (like AMIs, existing VPC or resource information).
 - **Resource Block**: Creates and manages infrastructure resources.
 - **Module Block**: Reuses and organizes Terraform code in reusable modules.
 - **Variable Block**: Defines input parameters that can be dynamically configured.
