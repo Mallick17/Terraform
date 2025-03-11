@@ -4,11 +4,51 @@
 ## Install Terraform
 Refer to the [Official Installation Guide to install in Ubuntu/Debian, CentOS/RHEL, Fedora, Amazon Linux](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
-## Terraform File Architecture
+## **Terraform Workflow**
 
-Below is a visual representation of the Terraform file architecture:
+_**Terraform follows a structured workflow to provision, manage, and destroy infrastructure. The workflow includes the following key commands:**_
 
-![Terraform File Architecture](Terraform%20File%20Architecture.drawio.png)
+1. **`terraform init`**  
+   - This command initializes the working directory containing Terraform configuration files.  
+   - It downloads necessary provider plugins and sets up the backend for storing Terraform state.  
+   - Example:  
+     ```sh
+     terraform init
+     ```
+
+2. **`terraform validate`**  
+   - It checks the syntax and correctness of the Terraform configuration files.  
+   - Helps identify errors before execution.  
+   - Example:  
+     ```sh
+     terraform validate
+     ```
+
+3. **`terraform plan`**  
+   - This command generates an execution plan by evaluating changes in the infrastructure.  
+   - It shows what actions will be performed without making actual changes.  
+   - Example:  
+     ```sh
+     terraform plan
+     ```
+
+4. **`terraform apply`**  
+   - This command executes the changes required to reach the desired infrastructure state.  
+   - It prompts for confirmation before applying the changes.  
+   - Example:  
+     ```sh
+     terraform apply
+     ```
+
+5. **`terraform destroy`**  
+   - This command removes all resources managed by Terraform.  
+   - It is used to clean up infrastructure when it's no longer needed.  
+   - Example:  
+     ```sh
+     terraform destroy
+     ```
+
+This workflow ensures that infrastructure changes are applied in a controlled and automated manner. Let me know if you need further details! 🚀
 
 ## Features
 
@@ -25,3 +65,8 @@ Below is a visual representation of the Terraform file architecture:
    terraform init
    terraform apply
 
+## Terraform File Architecture
+
+Below is a visual representation of the Terraform file architecture:
+
+![Terraform File Architecture](Terraform%20File%20Architecture.drawio.png)
