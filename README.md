@@ -172,9 +172,15 @@ provider "aws" {
 
 ### 3. **Data Block**
 
-The `data` block allows you to query data from external sources, such as existing resources or third-party APIs. This block doesn’t create resources but allows you to fetch and reference data.
+The `data` block allows you to fetch data from external sources, such as existing resources or third-party APIs. we can use a data block to fetch information about existing resources, such as a list of available AWS AMIs or the currently existing state of a Kubernetes cluster.
+- Retrieving information about existing infrastructure to be used in the Terraform configuration.
+- Querying and filtering data for use in resource configuration.
 
 #### Example:
+```hcl
+data "aws_vpc" "existing_vpc" { id = "vpc-12345678" } 
+```
+OR
 ```hcl
 data "aws_ami" "latest" {
   most_recent = true
