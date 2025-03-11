@@ -563,6 +563,32 @@ The team uses Terraform Cloud or a CI/CD pipeline (such as Jenkins or GitLab CI)
 
 - In summary, **Terraform backends** are crucial for managing infrastructure at scale, particularly when working in teams or automated workflows. They provide centralized, secure, and reliable storage for Terraform's state, support collaboration, and allow for state locking to prevent conflicts. Depending on your use case, you can choose from various backends like S3, Azure Blob Storage, GCS, or even HashiCorp Consul.
 
+
+## Terraform Script to Execute Basic Linux Commands, to Create and Zip a file
+### Terraform Configuration Example
+
+```hcl
+resource "null_resource" "example" {
+  provisioner "local-exec" {
+    command = <<EOT
+      mkdir -p /root/terra && \
+      echo 'Hello World' > /root/terra/hello.txt && \
+      zip -r /root/terra.zip /root/terra
+    EOT
+  }
+}
+```
+
+### Explanation of Blocks:
+- **`resource "null_resource" "example"`**: This defines a resource that does nothing but runs commands locally using provisioners.
+- **`provisioner "local-exec"`**: A provisioner to execute commands locally on the machine where Terraform is running.
+  - **`command = <<EOT`**: This defines a multi-line shell command that will be executed. The `<<EOT` allows for multiline strings until `EOT` is encountered at the end.
+    - `mkdir -p /root/terra`: Creates a directory `/root/terra` if it doesn’t already exist.
+    - `echo 'Hello World' > /root/terra/hello.txt`: Creates a text file `hello.txt` with the content "Hello World."
+    - `zip -r /root/terra.zip /root/terra`: Zips the `/root/terra` directory into the file `/root/terra.zip`.
+
+This configuration will create the required file structure and then zip it all into a single `.zip` file. 
+
 ## Terraform File Architecture
 
 Below is a visual representation of the Terraform file architecture:
