@@ -251,13 +251,34 @@ The `variable` block defines input variables, allowing you to pass values into y
 
 #### Example:
 ```hcl
+variable "instance_count" {
+  description = "Number of instances to create"
+  type        = number
+  default     = 1
+}
+```
+1. **`variable "instance_count"`**:  
+   Declares a variable named `instance_count` to be used in your configuration.
+
+2. **`description = "Number of instances to create"`**:  
+   Provides a brief description of what the variable represents.
+
+3. **`type = number`**:  
+   Specifies that the variable should be a numeric value (integer or float).
+
+4. **`default = 1`**:  
+   Sets the default value of `instance_count` to `1`, meaning it will create 1 instance unless overridden.
+This allows you to control the number of instances in your configuration dynamically.
+
+OR
+
+```hcl
 variable "instance_type" {
   description = "Type of EC2 instance"
   type        = string
   default     = "t2.micro"
 }
 ```
-
 #### Explanation:
 - The `variable` block defines an input variable called `instance_type`.
 - The `default` value is set to `t2.micro`, but it can be overridden when applying the configuration.
