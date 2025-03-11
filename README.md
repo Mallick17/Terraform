@@ -223,7 +223,7 @@ resource "aws_instance" "example" {
 
 ### 5. **Module Block**
 
-Modules in Terraform are reusable containers of resources and other configurations. A `module` block allows you to define and use a collection of resources defined in another directory or as part of a public module registry.
+Modules in Terraform are reusable containers of resources and other configurations to encapsulate and manage infrastructure components. A `module` block allows you to define and use a collection of resources defined in another directory or as part of a public module registry.
 
 #### Example:
 ```hcl
