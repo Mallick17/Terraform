@@ -334,7 +334,62 @@ resource "aws_instance" "example" {
   availability_zone = local.region
 }
 ```
+---
 
+### 9. **Backend Block**
+The `backend` block is used to configure where Terraform's state is stored (e.g., in S3, Consul, etc.). This is typically defined in the `terraform` block but is often part of the initial setup and not part of resource management.
+
+```hcl
+terraform {
+  backend "s3" {
+    bucket = "my-terraform-state"
+    key    = "terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+```
+
+---
+
+### 10. **Count and For_each**
+Both `count` and `for_each` are meta-arguments used to create multiple instances of a resource or module.
+
+- **Count**:
+
+```hcl
+resource "aws_instance" "example" {
+  count         = 3
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+}
+```
+
+- **For_each**:
+
+```hcl
+resource "aws_security_group" "example" {
+  for_each = toset(["sg1", "sg2", "sg3"])
+
+  name        = each.key
+  description = "Security group for ${each.key}"
+}
+```
+
+---
+
+### 11. **Lifecycle Block**
+The `lifecycle` block allows you to control the behavior of resource creation, modification, and destruction.
+
+```hcl
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+```
 ---
 
 ### Key Takeaways:
