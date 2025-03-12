@@ -425,7 +425,8 @@ A state file is typically written in JSON format. It includes the following key 
 5. **Provider Information**: Authentication details for Terraform providers (may be sensitive information like credentials, typically stored encrypted).
 6. **State Locking**: Information about whether the state file is currently locked to prevent concurrent modifications, especially when using remote backends.
 
-Here’s a simple example of what a Terraform state file might look like (this is a simplified version):
+<details>
+   <summary>Here’s a simple example of what a Terraform state file might look like (this is a simplified version):</summary>
 
 ```json
 {
@@ -452,6 +453,8 @@ Here’s a simple example of what a Terraform state file might look like (this i
   ]
 }
 ```
+
+</details>
 
 ### Why is the Terraform State File Required?
 
