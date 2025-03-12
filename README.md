@@ -10,7 +10,7 @@ Terraform scripts are written in HashiCorp Configuration Language (HCL) and are 
 - Terraform can help streamline infrastructure management, reduce human error, and increase efficiency.
 - Terraform can help teams collaborate and be more accountable.
 - Terraform can help teams build and manage resources in parallel across different providers.
-### `terraform.state` vs `terraform.state.backup`
+### `terraform.state` vs `terraform.tfstate.backup`
 
 | **Feature**               | **terraform.tfstate**                              | **terraform.tfstate.backup**                    |
 |---------------------------|----------------------------------------------------|-------------------------------------------------|
@@ -193,8 +193,10 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate
    
 </details>
 
+- After `terraform destroy` command is given `terraform.tfstate.backup` file is created.
+  
 <details>
-   <summary>terraform.state.backup File of the Created and Running Resource</summary>
+   <summary>terraform.tfstate.backup File of the Created and Running Resource</summary>
 
 root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
 ```hcl
@@ -340,7 +342,8 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
 
 </details>   
 
-- After `terraform destroy` command is given `terraform.tfstate.backup` file is created.
+
+
 ## Script to Create S3 Bucket in AWS
 ```hcl
 
