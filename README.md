@@ -346,5 +346,171 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
 
 ## Script to Create S3 Bucket in AWS
 ```hcl
+provider "aws" {
+  region = "ap-south-1"  # Region set to ap-south-1 (Mumbai)
+}
+
+resource "aws_s3_bucket" "mallick_bucket" {
+  bucket = "demo-terra-bucket-123456"  # Change to your desired bucket name
+}
+
+# Use aws_s3_bucket_versioning to enable versioning
+resource "aws_s3_bucket_versioning" "mallick_bucket_versioning" {
+  bucket = aws_s3_bucket.mallick_bucket.bucket
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+output "bucket_name" {
+  value = aws_s3_bucket.mallick_bucket.bucket
+}
+
+```
+
+<details>
+   <summary>State File of the Created and Running Resource</summary>
+
+root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate
+```hcl
+{
+  "version": 4,
+  "terraform_version": "1.11.1",
+  "serial": 12,
+  "lineage": "86a4b7d1-94d8-6b1d-65f7-a299e9c7acf8",
+  "outputs": {
+    "bucket_name": {
+      "value": "demo-terra-bucket-123456",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "mallick_bucket",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acceleration_status": "",
+            "acl": null,
+            "arn": "arn:aws:s3:::demo-terra-bucket-123456",
+            "bucket": "demo-terra-bucket-123456",
+            "bucket_domain_name": "demo-terra-bucket-123456.s3.amazonaws.com",
+            "bucket_prefix": "",
+            "bucket_regional_domain_name": "demo-terra-bucket-123456.s3.ap-south-1.amazonaws.com",
+            "cors_rule": [],
+            "force_destroy": false,
+            "grant": [
+              {
+                "id": "852b3ddbb7b9294824a2ececf0387cf0a9f734163b58d96287cd6e4d45fd6ab0",
+                "permissions": [
+                  "FULL_CONTROL"
+                ],
+                "type": "CanonicalUser",
+                "uri": ""
+              }
+            ],
+            "hosted_zone_id": "Z11RGJOFQNVJUP",
+            "id": "demo-terra-bucket-123456",
+            "lifecycle_rule": [],
+            "logging": [],
+            "object_lock_configuration": [],
+            "object_lock_enabled": false,
+            "policy": "",
+            "region": "ap-south-1",
+            "replication_configuration": [],
+            "request_payer": "BucketOwner",
+            "server_side_encryption_configuration": [
+              {
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {
+                        "kms_master_key_id": "",
+                        "sse_algorithm": "AES256"
+                      }
+                    ],
+                    "bucket_key_enabled": false
+                  }
+                ]
+              }
+            ],
+            "tags": null,
+            "tags_all": {},
+            "timeouts": null,
+            "versioning": [
+              {
+                "enabled": false,
+                "mfa_delete": false
+              }
+            ],
+            "website": [],
+            "website_domain": null,
+            "website_endpoint": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInJlYWQiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19"
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket_versioning",
+      "name": "mallick_bucket_versioning",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "demo-terra-bucket-123456",
+            "expected_bucket_owner": "",
+            "id": "demo-terra-bucket-123456",
+            "mfa": null,
+            "versioning_configuration": [
+              {
+                "mfa_delete": "",
+                "status": "Enabled"
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_s3_bucket.mallick_bucket"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
+```
+   
+</details>
+
+- After `terraform destroy` command is given `terraform.tfstate.backup` file is created.
+  
+<details>
+   <summary>terraform.tfstate.backup File of the Created and Running Resource</summary>
+
+root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
+```hcl
+{
+  "version": 4,
+  "terraform_version": "1.11.1",
+  "serial": 9,
+  "lineage": "86a4b7d1-94d8-6b1d-65f7-a299e9c7acf8",
+  "outputs": {},
+  "resources": [],
+  "check_results": null
+}
+
+```
+
+</details>   
 
 
