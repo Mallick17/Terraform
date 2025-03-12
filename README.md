@@ -396,7 +396,7 @@ resource "aws_instance" "example" {
 - **Terraform Block**: Configures global settings such as required versions and providers.
 - **Provider Block**: Defines the provider configuration, like AWS or Azure.
 - **Data Block**: Queries existing data (like AMIs, existing VPC or resource information).
-- **Resource Block**: Creates and manages infrastructure resources.
+- **Resource Block**: Creates and manages infrastructure resources or services of Cloud Providers.
 - **Module Block**: Reuses and organizes Terraform code in reusable modules.
 - **Variable Block**: Defines input parameters that can be dynamically configured.
 - **Output Block**: Exposes data for use after Terraform apply.
@@ -500,6 +500,8 @@ Terraform can manage complex dependencies between resources. The state file help
 6. **Regular Backups**: Regularly back up your state files to ensure you can recover from corruption or accidental deletion.
 
 - The Terraform state file is fundamental to the proper functioning of Terraform. It is required for tracking the resources managed by Terraform, planning infrastructure changes, collaborating with others, and maintaining the state of your infrastructure. Without it, Terraform would lose track of what resources have been created and how they should be modified, resulting in a broken or inefficient workflow. By understanding the importance of the state file and following best practices for managing it, you can ensure that your Terraform-based infrastructure management remains reliable and secure.
+
+---
 
 ## Terraform Backend File 
 
