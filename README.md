@@ -342,7 +342,7 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
 
 </details>   
 
-
+---
 
 ## Script to Create S3 Bucket in AWS
 ```hcl
@@ -513,4 +513,5 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
 
 </details>   
 
+---
 
