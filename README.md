@@ -372,7 +372,7 @@ output "bucket_name" {
 <details>
    <summary>State File of the Created and Running Resource</summary>
 
-root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate
+root@ip-172-31-4-247:~/tf-s3# cat terraform.tfstate
 ```hcl
 {
   "version": 4,
@@ -497,7 +497,7 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate
 <details>
    <summary>terraform.tfstate.backup File of the Created and Running Resource</summary>
 
-root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
+root@ip-172-31-4-247:~/tf-s3# cat terraform.tfstate.backup
 ```hcl
 {
   "version": 4,
@@ -515,3 +515,194 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate.backup
 
 ---
 
+## Script to Create IAM Roles & Policies in AWS
+```hcl
+provider "aws" {
+  region = "ap-south-1"  # Region set to ap-south-1 (Mumbai)
+}
+
+# Create an IAM Policy
+resource "aws_iam_policy" "mallick_policy" {
+  name        = "mallick-policy"
+  description = "A policy that grants basic S3 permissions"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket", "s3:GetObject"]
+        Resource = [
+          "arn:aws:s3:::demo-terra-bucket-123456",
+          "arn:aws:s3:::demo-terra-bucket-123456/*"
+        ]
+      },
+      {
+        Effect   = "Allow"
+        Action   = "s3:PutObject"
+        Resource = "arn:aws:s3:::demo-terra-bucket-123456/*"
+      }
+    ]
+  })
+}
+
+# Create an IAM Role
+resource "aws_iam_role" "mallick_role" {
+  name               = "mallick-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"  # EC2 can assume this role
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# Attach the IAM Policy to the Role
+resource "aws_iam_role_policy_attachment" "mallick_role_policy_attachment" {
+  policy_arn = aws_iam_policy.mallick_policy.arn
+  role       = aws_iam_role.mallick_role.name
+}
+
+output "role_name" {
+  value = aws_iam_role.mallick_role.name
+}
+
+output "policy_name" {
+  value = aws_iam_policy.mallick_policy.name
+}
+
+```
+
+<details>
+   <summary>State File of the Created and Running Resource</summary>
+
+root@ip-172-31-4-247:~/tf-iam# cat terraform.tfstate
+```hcl
+{
+  "version": 4,
+  "terraform_version": "1.11.1",
+  "serial": 4,
+  "lineage": "4e94e2a0-2d4e-f92d-627f-badc7fe5464c",
+  "outputs": {
+    "policy_name": {
+      "value": "mallick-policy",
+      "type": "string"
+    },
+    "role_name": {
+      "value": "mallick-role",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "mallick_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::339713104321:policy/mallick-policy",
+            "attachment_count": 0,
+            "description": "A policy that grants basic S3 permissions",
+            "id": "arn:aws:iam::339713104321:policy/mallick-policy",
+            "name": "mallick-policy",
+            "name_prefix": "",
+            "path": "/",
+            "policy": "{\"Statement\":[{\"Action\":[\"s3:ListBucket\",\"s3:GetObject\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::demo-terra-bucket-123456\",\"arn:aws:s3:::demo-terra-bucket-123456/*\"]},{\"Action\":\"s3:PutObject\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:s3:::demo-terra-bucket-123456/*\"}],\"Version\":\"2012-10-17\"}",
+            "policy_id": "ANPAU6GD2THAZ2IYO2TF5",
+            "tags": null,
+            "tags_all": {}
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "mallick_role",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::339713104321:role/mallick-role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2025-03-12T07:40:00Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "mallick-role",
+            "inline_policy": [],
+            "managed_policy_arns": [],
+            "max_session_duration": 3600,
+            "name": "mallick-role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": null,
+            "tags_all": {},
+            "unique_id": "AROAU6GD2THASP4LN5K4V"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "mallick_role_policy_attachment",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "mallick-role-20250312074001913700000001",
+            "policy_arn": "arn:aws:iam::339713104321:policy/mallick-policy",
+            "role": "mallick-role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_policy.mallick_policy",
+            "aws_iam_role.mallick_role"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
+
+```
+   
+</details>
+
+- After `terraform destroy` command is given `terraform.tfstate.backup` file is created.
+  
+<details>
+   <summary>terraform.tfstate.backup File of the Created and Running Resource</summary>
+
+root@ip-172-31-4-247:~/tf-iam# cat terraform.tfstate.backup
+```hcl
+{
+  "version": 4,
+  "terraform_version": "1.11.1",
+  "serial": 9,
+  "lineage": "86a4b7d1-94d8-6b1d-65f7-a299e9c7acf8",
+  "outputs": {},
+  "resources": [],
+  "check_results": null
+}
+
+```
+
+</details>   
