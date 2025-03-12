@@ -402,15 +402,12 @@ resource "aws_instance" "example" {
 - **Output Block**: Exposes data for use after Terraform apply.
 - **Locals Block**: Creates local variables for reuse within the configuration.
 
+---
+
 ### Terraform State File
-
-Terraform is an open-source infrastructure-as-code (IaC) tool that allows you to define and manage infrastructure using a declarative configuration language. One of the most important components of Terraform is the **state file**.
-
-### What is a Terraform State File?
-
-A **Terraform state file** is a critical part of how Terraform works. It is a file where Terraform stores the mapping between your Terraform configuration (in the `.tf` files) and the real-world infrastructure that it manages. Essentially, the state file acts as the source of truth for Terraform's understanding of the current state of the infrastructure it is managing.
-
-The state file is typically saved as `terraform.tfstate` and can be found in the directory where the Terraform configuration is located, though you can configure it to be stored in remote backends (e.g., AWS S3, Azure Blob Storage, etc.).
+- Terraform is an open-source infrastructure-as-code (IaC) tool that allows you to define and manage infrastructure using a declarative configuration language. One of the most important components of Terraform is the **state file**.
+- A **Terraform state file** is a critical part of how Terraform works. It is a file where Terraform stores the mapping between your Terraform configuration (in the `.tf` files) and the real-world infrastructure that it manages. Essentially, the state file acts as the source of truth for Terraform's understanding of the current state of the infrastructure it is managing.
+- The state file is typically saved as `terraform.tfstate` and can be found in the directory where the Terraform configuration is located, though you can configure it to be stored in remote backends (e.g., AWS S3, Azure Blob Storage, etc.).
 
 The state file contains the following essential data:
 - **Metadata**: Information about the Terraform configuration version, provider configurations, etc.
@@ -455,9 +452,6 @@ Here’s a simple example of what a Terraform state file might look like (this i
   ]
 }
 ```
-
-## Terraform State File
-Terraform is an open-source infrastructure-as-code (IaC) tool that allows you to define and manage infrastructure using a declarative configuration language. One of the most important components of Terraform is the **state file**.
 
 ### Why is the Terraform State File Required?
 
