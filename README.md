@@ -185,6 +185,7 @@ root@ip-172-31-4-247:~/tf-ec2# cat terraform.tfstate
    
 </details>
 
+- After `terraform destroy` command is given `terraform.tfstate.backup` file is created.
 ## Script to Create S3 Bucket in AWS
 ```hcl
 
