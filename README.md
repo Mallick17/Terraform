@@ -338,6 +338,7 @@ resource "aws_instance" "example" {
 
 ### 9. **Backend Block**
 The `backend` block is used to configure where Terraform's state is stored (e.g., in S3, Consul, etc.). This is typically defined in the `terraform` block but is often part of the initial setup and not part of resource management.
+- Configuring the backend-specific settings for storing the Terraform state file. The backend configuration is typically specified in a separate configuration file, often named backend.tf or included within the main.tf file. It defines the backend provider and the specific settings required to connect to and use the backend.
 
 ```hcl
 terraform {
@@ -391,6 +392,33 @@ resource "aws_instance" "example" {
 }
 ```
 ---
+
+### 12. **Local Block**
+Declaring local variables within the Terraform configuration for easier code readability and reusability.Local variables are temporary and can be defined within a block to compute and store intermediate values that are used within the same configuration file. These variables are not exposed to other configurations or modules and are purely for internal use within the same configuration.
+```hcl
+locals { instance_name = "my-instance" 
+instance_tags = { Name = local.instance_name } }
+```
+
+### 13. **Provisoner Block**
+Provisioners allow us to specify actions to be performed on local or remote machines to prepare resources for service. Provisioners allow us to perform tasks such as installing the desired software, configuring the resource, running scripts, or executing commands on the resource.
+- Provisioners can be defined within a resource block and are executed in a specific order depending on the type of provisioner.
+- There are two types of Terraform provisioners: `local-exec` and `remote-exec`.
+- `local-exec` invokes local executables after a resource is created. It runs the process on the machine running Terraform, meaning the machine where you run terraform apply. This is most likely your own computer.
+- `remote-exec` invokes a remote executable, something like an EC2 instance on AWS.
+```hcl
+resource "aws_instance" "web_server" {
+    provisioner "local-exec" {
+    command = "Get-Date > completed.txt"
+    interpreter = ["PowerShell", "-Command"]
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/script.sh",
+      "/tmp/script.sh args",
+    ]}}
+allows
+```
 
 ### Key Takeaways:
 - **Terraform Block**: Configures global settings such as required versions and providers.
