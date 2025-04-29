@@ -20,3 +20,11 @@ module "ecr" {
   source           = "./modules/ecr"
   repository_name  = "final-ror-ecr"
 }
+
+module "codebuild" {
+  source            = "./modules/codebuild"
+  project_name      = "final-ror-codebuild"
+  repo_url          = "https://github.com/Mallick17/ROR-AWS-ECS"
+  service_role_arn  = "arn:aws:iam::339713104321:role/codebuild-ror-app-role"
+  ecr_repo_url      = module.ecr.repository_url
+}
