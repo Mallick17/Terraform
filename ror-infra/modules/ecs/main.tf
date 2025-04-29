@@ -41,4 +41,35 @@ resource "aws_ecs_task_definition" "this" {
       portMappings = [
         {
           containerPort = 6379
+        }
+      ]
+    }
+  ])
+}
 
+resource "aws_ecs_service" "this" {
+  name            = var.service_name
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.this.arn
+  desired_count   = 1
+  launch_type     = "EC2"
+
+  deployment_controller {
+    type = "ECS"
+  }
+
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+
+  placement_strategy {
+    type  = "spread"
+    field = "attribute:availabilityZone"
+  }
+
+  enable_ecs_managed_tags = true
+
+  capacity_provider_strategy {
+    capacity_provider = "EC2"
+    weight            = 1
+  }
+}
