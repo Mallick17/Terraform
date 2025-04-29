@@ -28,3 +28,22 @@ module "codebuild" {
   service_role_arn  = "arn:aws:iam::339713104321:role/codebuild-ror-app-role"
   ecr_repo_url      = module.ecr.repository_url
 }
+
+module "ecs" {
+  source = "./modules/ecs"
+
+  cluster_name            = "final-ror-cluster"
+  task_family             = "final-ror-task-definition"
+  service_name            = "final-ror-cluster-service"
+  task_execution_role_arn = "arn:aws:iam::339713104321:role/ecsTaskExecutionRole"
+  app_image               = "${module.ecr.repository_url}:latest"
+
+  db_user           = "myuser"
+  db_password       = "mypassword"
+  db_host           = module.rds.db_endpoint
+  db_port           = "5432"
+  db_name           = "final-ror-db"
+  redis_url         = "redis://redis:6379/0"
+  rails_master_key  = "c3ca922688d4bf22ac7fe38430dd8849"
+  secret_key_base   = "600f21de02355f788c759ff862a2cb22ba84ccbf072487992f4c2c49ae260f
+
