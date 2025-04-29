@@ -15,3 +15,8 @@ module "rds" {
   ]
   sg_ids        = ["sg-0a35e9086b143cac5"]
 }
+
+module "ecr" {
+  source           = "./modules/ecr"
+  repository_name  = "final-ror-ecr"
+}
