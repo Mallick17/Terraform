@@ -1460,3 +1460,177 @@ root@ip-172-31-37-110:~/tf-cloudfront# cat terraform.tfstate.backup
 ```
 
 </details>
+
+## Script to create Launch Template, Auto Scaling Group and ECS Cluster
+- `root@ip-172-31-10-86:~/terraform# cat main.tf`
+```hcl
+module "ecs_infra" {
+  source               = "./modules/ecs_cluster_with_asg"
+  name_prefix          = "gyan"
+  instance_type        = "t3.micro"
+  key_name             = "Myops"
+  instance_profile_name = "ecsInstanceRole"
+  min_size             = 1
+  max_size             = 2
+  desired_capacity     = 1
+}
+```
+
+
+- `root@ip-172-31-10-86:~/terraform# cat modules/ecs_cluster_with_asg/main.tf`
+```hcl
+data "aws_ssm_parameter" "ecs_ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+}
+
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+resource "aws_security_group" "ecs" {
+  name        = "${var.name_prefix}-asg-sg"
+  description = "Allow all outbound"
+  vpc_id      = data.aws_vpc.default.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_ecs_cluster" "this" {
+  name = "${var.name_prefix}-cluster"
+}
+
+resource "aws_launch_template" "ecs" {
+  name_prefix   = "${var.name_prefix}-lt-"
+  image_id      = data.aws_ssm_parameter.ecs_ami.value
+  instance_type = var.instance_type
+  key_name      = var.key_name
+
+  iam_instance_profile {
+    name = var.instance_profile_name
+  }
+
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    echo ECS_CLUSTER=${var.name_prefix}-cluster >> /etc/ecs/ecs.config
+  EOF
+  )
+
+  vpc_security_group_ids = [aws_security_group.ecs.id]
+}
+
+resource "aws_autoscaling_group" "ecs" {
+  desired_capacity     = var.desired_capacity
+  max_size             = var.max_size
+  min_size             = var.min_size
+  vpc_zone_identifier  = data.aws_subnets.default.ids
+
+  launch_template {
+    id      = aws_launch_template.ecs.id
+    version = "$Latest"
+  }
+
+  protect_from_scale_in = true
+
+  tag {
+    key                 = "Name"
+    value               = "${var.name_prefix}-asg-instance"
+    propagate_at_launch = true
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_ecs_capacity_provider" "asg_provider" {
+  name = "${var.name_prefix}-capacity-provider"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = aws_autoscaling_group.ecs.arn
+    managed_termination_protection = "ENABLED"
+
+    managed_scaling {
+      status                    = "ENABLED"
+      target_capacity           = 100
+      minimum_scaling_step_size = 1
+      maximum_scaling_step_size = 100
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_ecs_cluster_capacity_providers" "attach" {
+  cluster_name = aws_ecs_cluster.this.name
+
+  capacity_providers = [aws_ecs_capacity_provider.asg_provider.name]
+
+  default_capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.asg_provider.name
+    weight            = 1
+    base              = 1
+  }
+}
+
+output "cluster_name" {
+  value = aws_ecs_cluster.this.name
+}
+```
+
+- `root@ip-172-31-10-86:~/terraform# cat modules/ecs_cluster_with_asg/variables.tf`
+```hcl
+variable "name_prefix" {
+  type        = string
+  description = "Prefix for naming ECS cluster and related resources"
+}
+
+#variable "ami_id" {
+#  type        = string
+#  description = "AMI ID (ECS-optimized Amazon Linux 2)"
+#}
+
+variable "instance_type" {
+  type        = string
+  default     = "t3.micro"
+  description = "EC2 instance type"
+}
+
+variable "key_name" {
+  type        = string
+  description = "EC2 Key Pair name"
+}
+
+variable "instance_profile_name" {
+  type        = string
+  description = "IAM Instance Profile name (ecsInstanceRole)"
+}
+
+variable "min_size" {
+  type        = number
+  default     = 1
+}
+
+variable "max_size" {
+  type        = number
+  default     = 2
+}
+
+variable "desired_capacity" {
+  type        = number
+  default     = 1
+}
+```
